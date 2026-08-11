@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Domain &amp; Range Practice</title>
+<style>
+  :root{
+    --navy:#1f3554;
+    --navy-dark:#152740;
+    --slate:#4a5b73;
+    --paper:#f7f5ef;
+    --card:#ffffff;
+    --line:#d8d3c4;
+    --accent:#c1652f;
+    --accent-dark:#a3501f;
+    --good:#2f7a4f;
+    --good-bg:#e7f3ea;
+    --bad:#b23b3b;
+    --bad-bg:#faeaea;
+    --warn-bg:#fbf1e0;
+    --warn:#8a5b12;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: Georgia, 'Times New Roman', serif;
+    background:var(--paper);
+    color:#232323;
+    padding:20px 14px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  h1{
+    font-size:1.5rem;
+    color:var(--navy);
+    border-bottom:3px solid var(--accent);
+    padding-bottom:10px;
+    margin-bottom:4px;
+  }
+  .sub{
+    font-family: Helvetica, Arial, sans-serif;
+    color:var(--slate);
+    font-size:0.9rem;
+    margin-bottom:22px;
+  }
+  .tabs{
+    display:flex;
+    gap:8px;
+    margin-bottom:20px;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .tab-btn{
+    flex:1;
+    padding:10px 8px;
+    border:2px solid var(--navy);
+    background:var(--card);
+    color:var(--navy);
+    font-weight:700;
+    font-size:0.88rem;
+    border-radius:8px 8px 0 0;
+    cursor:pointer;
+    text-align:center;
+  }
+  .tab-btn.active{
+    background:var(--navy);
+    color:#fff;
+  }
+  .panel{display:none;}
+  .panel.active{display:block;}
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px 18px 22px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom:18px;
+  }
+  .section-title{
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight:700;
+    color:var(--navy);
+    font-size:1rem;
+    margin:0 0 10px;
+  }
+
+  /* ---------- Bucket Sort ---------- */
+  .pairs-display{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:1.05rem;
+    text-align:center;
+    color:var(--navy-dark);
+    background:var(--warn-bg);
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:12px;
+    margin-bottom:14px;
+    letter-spacing:0.5px;
+  }
+  .chip-pool{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    min-height:50px;
+    padding:10px;
+    margin-bottom:16px;
+    background:#fbfaf6;
+    border:1px solid var(--line);
+    border-radius:8px;
+  }
+  .chip{
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:1rem;
+    padding:8px 16px;
+    border-radius:20px;
+    cursor:pointer;
+    border:2px solid transparent;
+    transition: transform .12s;
+    user-select:none;
+  }
+  .chip.x{ background:#dce8f5; color:var(--navy-dark); border-color:#a9c4e0; }
+  .chip.y{ background:#fbe6d6; color:var(--accent-dark); border-color:#f0bf95; }
+  .chip.selected{
+    border-color:var(--navy);
+    transform: scale(1.12);
+    box-shadow:0 2px 8px rgba(0,0,0,0.18);
+  }
+  .chip.shake{ animation: shake .3s; }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    25%{transform:translateX(-6px);}
+    75%{transform:translateX(6px);}
+  }
+  .buckets{
+    display:flex;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .bucket{
+    flex:1;
+    min-height:110px;
+    border:2px solid var(--navy);
+    border-radius:10px;
+    padding:10px;
+    background:#fdfcf9;
+  }
+  .bucket h3{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.85rem;
+    margin:0 0 8px;
+    text-align:center;
+    color:var(--navy);
+  }
+  .bucket .placed{
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    justify-content:center;
+  }
+  .bucket .placed span{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.9rem;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:14px;
+    background:var(--good-bg);
+    color:var(--good);
+  }
+  .bucket.target-glow{
+    box-shadow:0 0 0 4px rgba(31,53,84,0.15);
+  }
+  .set-notation{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.95rem;
+    background:#fbfaf6;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:10px;
+  }
+  .feedback{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.9rem;
+    padding:8px 12px;
+    border-radius:8px;
+    margin-bottom:10px;
+    display:none;
+  }
+  .feedback.show{display:block;}
+  .feedback.good{background:var(--good-bg); color:var(--good);}
+  .feedback.bad{background:var(--bad-bg); color:var(--bad);}
+  .btn-row{display:flex; gap:10px; flex-wrap:wrap;}
+  button.action{
+    font-family: Helvetica, Arial, sans-serif;
+    font-weight:700;
+    font-size:0.85rem;
+    padding:9px 16px;
+    border-radius:7px;
+    border:none;
+    cursor:pointer;
+    background:var(--navy);
+    color:#fff;
+  }
+  button.action.secondary{
+    background:#fff;
+    color:var(--navy);
+    border:2px solid var(--navy);
+  }
+  button.action:hover{opacity:0.9;}
+
+  /* ---------- Rational Function Checker ---------- */
+  .frac-display{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-family: Georgia, serif;
+    font-size:1.3rem;
+    color:var(--navy-dark);
+    background:var(--warn-bg);
+    border:1px dashed var(--line);
+    border-radius:8px;
+    padding:20px 12px;
+    margin-bottom:16px;
+  }
+  .frac-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .frac-num, .frac-den{
+    padding:2px 10px;
+  }
+  .frac-num{border-bottom:2px solid var(--navy-dark);}
+  .input-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:12px;
+    align-items:center;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .input-row label{
+    font-size:0.85rem;
+    color:var(--slate);
+    font-weight:700;
+  }
+  .input-row input{
+    flex:1;
+    min-width:160px;
+    padding:9px 12px;
+    border:2px solid var(--line);
+    border-radius:7px;
+    font-size:0.95rem;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  .input-row input:focus{
+    outline:none;
+    border-color:var(--navy);
+  }
+  .explain{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.88rem;
+    line-height:1.55;
+    background:#fbfaf6;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    display:none;
+  }
+  .explain.show{display:block;}
+  .explain .step{margin-bottom:6px;}
+  .hint{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.78rem;
+    color:var(--slate);
+    margin:-6px 0 14px;
+  }
+  .score-line{
+    font-family: Helvetica, Arial, sans-serif;
+    font-size:0.82rem;
+    color:var(--slate);
+    text-align:right;
+    margin-top:-4px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>Domain &amp; Range Practice</h1>
+  <div class="sub">Sort ordered pairs into Domain and Range, then find excluded values in rational functions.</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tabBtn1" onclick="showTab(1)">Ordered Pairs</button>
+    <button class="tab-btn" id="tabBtn2" onclick="showTab(2)">Rational Functions</button>
+  </div>
+
+  <!-- ============ PANEL 1: BUCKET SORT ============ -->
+  <div class="panel active" id="panel1">
+    <div class="card">
+      <div class="section-title">Sort each value into the correct bucket</div>
+      <div class="pairs-display" id="pairsDisplay"></div>
+      <div class="hint">Tap a number chip, then tap the bucket where it belongs. Domain = inputs (x). Range = outputs (y).</div>
+
+      <div class="chip-pool" id="chipPool"></div>
+
+      <div class="buckets">
+        <div class="bucket" id="bucketDomain" onclick="dropInto('domain')">
+          <h3>DOMAIN (x-values)</h3>
+          <div class="placed" id="placedDomain"></div>
+        </div>
+        <div class="bucket" id="bucketRange" onclick="dropInto('range')">
+          <h3>RANGE (y-values)</h3>
+          <div class="placed" id="placedRange"></div>
+        </div>
+      </div>
+
+      <div class="feedback" id="sortFeedback"></div>
+      <div class="set-notation" id="setNotation" style="display:none;"></div>
+
+      <div class="btn-row">
+        <button class="action" onclick="newSortProblem()">New Set of Pairs</button>
+        <button class="action secondary" onclick="resetSortProblem()">Reset This Set</button>
+      </div>
+      <div class="score-line" id="sortScore"></div>
+    </div>
+  </div>
+
+  <!-- ============ PANEL 2: RATIONAL FUNCTIONS ============ -->
+  <div class="panel" id="panel2">
+    <div class="card">
+      <div class="section-title">Find the excluded x-value(s)</div>
+      <div class="frac-display" id="fracDisplay"></div>
+
+      <div class="input-row">
+        <label for="excludedInput">Excluded x =</label>
+        <input type="text" id="excludedInput" placeholder="e.g. 4   or   3, -3   or   none">
+        <button class="action" onclick="checkRational()">Check</button>
+      </div>
+      <div class="hint">Separate multiple values with commas. Type "none" if the denominator is never zero.</div>
+
+      <div class="feedback" id="ratFeedback"></div>
+      <div class="explain" id="ratExplain"></div>
+
+      <div class="btn-row">
+        <button class="action" onclick="newRationalProblem()">New Function</button>
+        <button class="action secondary" onclick="toggleExplain()">Show Steps</button>
+      </div>
+      <div class="score-line" id="ratScore"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+function showTab(n){
+  document.getElementById('panel1').classList.toggle('active', n===1);
+  document.getElementById('panel2').classList.toggle('active', n===2);
+  document.getElementById('tabBtn1').classList.toggle('active', n===1);
+  document.getElementById('tabBtn2').classList.toggle('active', n===2);
+}
+
+/* ============================================================
+   PART 1: ORDERED PAIR BUCKET SORT
+   ============================================================ */
+const sortBank = [
+  [[1,2],[2,4],[3,6],[4,8]],
+  [[-1,3],[0,3],[1,5],[2,7]],
+  [[2,1],[3,1],[4,9],[5,0]],
+  [[-2,-3],[0,1],[2,5],[4,1]],
+  [[5,10],[6,10],[7,15],[8,20]]
+];
+let sortDeck = [];
+let currentSort = null;
+let chips = [];           // {id, value, type:'x'|'y', pairIndex, placed:false}
+let selectedChipId = null;
+let sortAttempts = 0, sortCorrect = 0;
+
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+  return a;
+}
+
+function newSortProblem(){
+  if(sortDeck.length===0) sortDeck = shuffle(sortBank.map((_,i)=>i));
+  const idx = sortDeck.pop();
+  currentSort = sortBank[idx];
+  buildSortUI();
+}
+
+function buildSortUI(){
+  document.getElementById('sortFeedback').classList.remove('show');
+  document.getElementById('setNotation').style.display = 'none';
+
+  const pairsStr = '{ ' + currentSort.map(p=>`(${p[0]}, ${p[1]})`).join(',  ') + ' }';
+  document.getElementById('pairsDisplay').textContent = pairsStr;
+
+  chips = [];
+  let id = 0;
+  currentSort.forEach((p, pi)=>{
+    chips.push({id:id++, value:p[0], type:'x', pairIndex:pi, placed:false});
+    chips.push({id:id++, value:p[1], type:'y', pairIndex:pi, placed:false});
+  });
+  selectedChipId = null;
+  renderChips();
+  document.getElementById('placedDomain').innerHTML = '';
+  document.getElementById('placedRange').innerHTML = '';
+}
+
+function resetSortProblem(){
+  if(currentSort) buildSortUI();
+}
+
+function renderChips(){
+  const pool = document.getElementById('chipPool');
+  pool.innerHTML = '';
+  chips.filter(c=>!c.placed).forEach(c=>{
+    const el = document.createElement('div');
+    el.className = 'chip ' + c.type + (c.id===selectedChipId ? ' selected':'');
+    el.textContent = c.value;
+    el.onclick = (e)=>{ e.stopPropagation(); selectChip(c.id); };
+    pool.appendChild(el);
+  });
+}
+
+function selectChip(id){
+  selectedChipId = (selectedChipId===id) ? null : id;
+  renderChips();
+}
+
+function dropInto(bucketType){
+  if(selectedChipId===null) return;
+  const chip = chips.find(c=>c.id===selectedChipId);
+  if(!chip) return;
+
+  sortAttempts++;
+  const correctBucket = chip.type === 'x' ? 'domain' : 'range';
+  const fb = document.getElementById('sortFeedback');
+
+  if(bucketType === correctBucket){
+    chip.placed = true;
+    sortCorrect++;
+    addToBucketDisplay(bucketType, chip.value);
+    fb.textContent = tierMessage(true, sortCorrect, sortAttempts);
+    fb.className = 'feedback show good';
+  } else {
+    fb.textContent = chip.type === 'x'
+      ? `${chip.value} is an input (x-value) — that belongs in Domain.`
+      : `${chip.value} is an output (y-value) — that belongs in Range.`;
+    fb.className = 'feedback show bad';
+    flashChip(chip.id);
+  }
+  selectedChipId = null;
+  renderChips();
+  checkAllPlaced();
+  document.getElementById('sortScore').textContent = `Correct on first tap: track your streak — ${sortCorrect} placed so far.`;
+}
+
+function flashChip(id){
+  const pool = document.getElementById('chipPool');
+  const idxVisible = chips.filter(c=>!c.placed).findIndex(c=>c.id===id);
+  const el = pool.children[idxVisible];
+  if(el){
+    el.classList.add('shake');
+    setTimeout(()=>el.classList.remove('shake'), 300);
+  }
+}
+
+function addToBucketDisplay(bucketType, value){
+  const containerId = bucketType==='domain' ? 'placedDomain' : 'placedRange';
+  const container = document.getElementById(containerId);
+  // avoid duplicate display of same value (set behavior)
+  const already = Array.from(container.children).some(s=>s.textContent === String(value));
+  if(!already){
+    const span = document.createElement('span');
+    span.textContent = value;
+    container.appendChild(span);
+  }
+}
+
+function checkAllPlaced(){
+  if(chips.every(c=>c.placed)){
+    const domainVals = [...new Set(currentSort.map(p=>p[0]))];
+    const rangeVals = [...new Set(currentSort.map(p=>p[1]))];
+    document.getElementById('setNotation').style.display = 'block';
+    document.getElementById('setNotation').innerHTML =
+      `<strong>Domain</strong> = { ${domainVals.join(', ')} } &nbsp;&nbsp; <strong>Range</strong> = { ${rangeVals.join(', ')} }`;
+  }
+}
+
+function tierMessage(correct, correctCount, attempts){
+  if(!correct) return "Not quite — try again.";
+  const acc = correctCount/attempts;
+  if(acc === 1) return "Exactly right — clean sort!";
+  if(acc >= 0.75) return "Correct! Solid work.";
+  return "Correct — keep going, you're getting the pattern.";
+}
+
+/* ============================================================
+   PART 2: RATIONAL FUNCTION DOMAIN CHECKER
+   ============================================================ */
+const rationalBank = [
+  {
+    num:'x + 3', den:'x \u2212 4',
+    excluded:[4],
+    steps:[
+      'Set the denominator equal to zero: x \u2212 4 = 0',
+      'Solve: x = 4',
+      'This is the only value that makes the denominator zero, so it is the only exclusion.',
+      'Domain: (\u2212\u221e, 4) \u222a (4, \u221e)'
+    ]
+  },
+  {
+    num:'2x', den:'x\u00B2 \u2212 9',
+    excluded:[3,-3],
+    steps:[
+      'Set the denominator equal to zero: x\u00B2 \u2212 9 = 0',
+      'Factor: (x \u2212 3)(x + 3) = 0',
+      'Solve: x = 3 or x = \u22123',
+      'Domain: (\u2212\u221e, \u22123) \u222a (\u22123, 3) \u222a (3, \u221e)'
+    ]
+  },
+  {
+    num:'5', den:'x\u00B2 + 1',
+    excluded:[],
+    steps:[
+      'Set the denominator equal to zero: x\u00B2 + 1 = 0',
+      'Solve: x\u00B2 = \u22121 \u2014 no real solution exists',
+      'Since the denominator is never zero for real x, nothing is excluded.',
+      'Domain: (\u2212\u221e, \u221e), all real numbers'
+    ]
+  },
+  {
+    num:'x \u2212 2', den:'x\u00B2 \u2212 4',
+    excluded:[2,-2],
+    steps:[
+      'Set the denominator equal to zero: x\u00B2 \u2212 4 = 0',
+      'Factor: (x \u2212 2)(x + 2) = 0',
+      'Solve: x = 2 or x = \u22122',
+      'Note: even though (x \u2212 2) also appears in the numerator, the original denominator is still zero at x = 2, so x = 2 stays excluded.',
+      'Domain: (\u2212\u221e, \u22122) \u222a (\u22122, 2) \u222a (2, \u221e)'
+    ]
+  },
+  {
+    num:'7', den:'x',
+    excluded:[0],
+    steps:[
+      'Set the denominator equal to zero: x = 0',
+      'This is already solved \u2014 the exclusion is x = 0.',
+      'Domain: (\u2212\u221e, 0) \u222a (0, \u221e)'
+    ]
+  },
+  {
+    num:'x + 1', den:'x\u00B2 \u2212 5x + 6',
+    excluded:[2,3],
+    steps:[
+      'Set the denominator equal to zero: x\u00B2 \u2212 5x + 6 = 0',
+      'Factor: (x \u2212 2)(x \u2212 3) = 0',
+      'Solve: x = 2 or x = 3',
+      'Domain: (\u2212\u221e, 2) \u222a (2, 3) \u222a (3, \u221e)'
+    ]
+  },
+  {
+    num:'4', den:'x\u00B2 \u2212 6x + 9',
+    excluded:[3],
+    steps:[
+      'Set the denominator equal to zero: x\u00B2 \u2212 6x + 9 = 0',
+      'Factor: (x \u2212 3)\u00B2 = 0',
+      'Solve: x = 3 (a repeated / double root, so only one value is excluded)',
+      'Domain: (\u2212\u221e, 3) \u222a (3, \u221e)'
+    ]
+  },
+  {
+    num:'3x \u2212 1', den:'6',
+    excluded:[],
+    steps:[
+      'Set the denominator equal to zero: 6 = 0 \u2014 this is never true.',
+      'The denominator is a nonzero constant, so it can never equal zero.',
+      'Even though x appears in the numerator, that never restricts the domain.',
+      'Domain: (\u2212\u221e, \u221e), all real numbers'
+    ]
+  }
+];
+
+let ratDeck = [];
+let currentRat = null;
+let ratAttempts = 0, ratCorrect = 0;
+
+function newRationalProblem(){
+  if(ratDeck.length===0) ratDeck = shuffle(rationalBank.map((_,i)=>i));
+  const idx = ratDeck.pop();
+  currentRat = rationalBank[idx];
+  document.getElementById('fracDisplay').innerHTML =
+    `<span>f(x) =</span>
+     <div class="frac-col">
+       <div class="frac-num">${currentRat.num}</div>
+       <div class="frac-den">${currentRat.den}</div>
+     </div>`;
+  document.getElementById('excludedInput').value = '';
+  document.getElementById('ratFeedback').classList.remove('show');
+  document.getElementById('ratExplain').classList.remove('show');
+  buildExplainHTML();
+}
+
+function buildExplainHTML(){
+  const explain = document.getElementById('ratExplain');
+  explain.innerHTML = currentRat.steps.map(s=>`<div class="step">${s}</div>`).join('');
+}
+
+function toggleExplain(){
+  document.getElementById('ratExplain').classList.toggle('show');
+}
+
+function parseExcludedInput(str){
+  const s = str.trim().toLowerCase();
+  if(s === '' ) return null;
+  if(s === 'none' || s === 'no restrictions' || s === 'all reals' || s === 'all real numbers') return [];
+  return s.split(',')
+          .map(t=>t.trim())
+          .filter(t=>t.length>0)
+          .map(t=>parseFloat(t))
+          .filter(n=>!isNaN(n));
+}
+
+function checkRational(){
+  const raw = document.getElementById('excludedInput').value;
+  const student = parseExcludedInput(raw);
+  const fb = document.getElementById('ratFeedback');
+
+  if(student === null){
+    fb.textContent = "Type your answer first — a number, several numbers separated by commas, or \"none\".";
+    fb.className = 'feedback show bad';
+    return;
+  }
+
+  ratAttempts++;
+  const correctSet = currentRat.excluded.slice().sort((a,b)=>a-b);
+  const studentSet = [...new Set(student)].sort((a,b)=>a-b);
+
+  const missing = correctSet.filter(v=>!studentSet.includes(v));
+  const extra = studentSet.filter(v=>!correctSet.includes(v));
+
+  if(missing.length===0 && extra.length===0){
+    ratCorrect++;
+    fb.textContent = tierMessage(true, ratCorrect, ratAttempts);
+    fb.className = 'feedback show good';
+  } else if(missing.length>0 && extra.length===0 && studentSet.length>0){
+    fb.textContent = `Partial credit — you found ${studentSet.join(', ')}, but missed ${missing.join(', ')}. Check the denominator again.`;
+    fb.className = 'feedback show bad';
+  } else if(extra.length>0 && missing.length===0){
+    fb.textContent = `Close — ${extra.join(', ')} does NOT make the denominator zero. Double-check by substituting it in.`;
+    fb.className = 'feedback show bad';
+  } else if(correctSet.length===0 && studentSet.length>0){
+    fb.textContent = `Actually this denominator is never zero for real x, so nothing should be excluded. Try substituting your value into the denominator.`;
+    fb.className = 'feedback show bad';
+  } else {
+    fb.textContent = `Not quite. Set the denominator equal to zero and solve for x.`;
+    fb.className = 'feedback show bad';
+  }
+  document.getElementById('ratScore').textContent = `Accuracy so far: ${ratCorrect}/${ratAttempts} correct.`;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+newSortProblem();
+newRationalProblem();
+</script>
+</body>
+</html>
